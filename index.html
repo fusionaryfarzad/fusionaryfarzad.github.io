@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fusionary ASCII Terminal</title>
 
 <style>
@@ -41,31 +41,45 @@
     font-size: 14px;
     line-height: 1.2;
     text-align: left;
-    white-space: pre-wrap;              /* ensure spaces are preserved and good for mobile*/
-    font-variant-ligatures: none;  /* avoid ligature surprises */
+    white-space: pre;               /* keep the ASCII box tight */
+    font-variant-ligatures: none;
+  }
+  /* scale down on small screens instead of wrapping */
+  @media (max-width: 480px) {
+    pre { font-size: 12px; }
   }
 
-  /* Floating Cat (kept subtle to avoid visual box distortion) */
+  /* Floating Cat */
   @keyframes catFloat {
     0%   { transform: translateY(0px); }
     50%  { transform: translateY(-2px); }
     100% { transform: translateY(0px); }
   }
-
   .cat {
     display: inline-block;
-    width: 7ch;          /* fixed character width keeps columns aligned */
+    width: 7ch;
     vertical-align: baseline;
     line-height: 1;
     animation: catFloat 2s ease-in-out infinite;
     will-change: transform;
   }
 
-.fire {
-  color: #ff5500;
-  text-shadow: 0 0 6px #ff2200, 0 0 12px #ff6600;
-}
-  
+  /* ASCII Fire (inline flicker) */
+  @keyframes flickerGlow {
+    0%   { text-shadow: 0 0 3px #ff9100, 0 0 6px #ff3b00, 0 0 10px #ff0000; }
+    50%  { text-shadow: 0 0 5px #ffc400, 0 0 10px #ff6a00, 0 0 15px #ff1a00; }
+    100% { text-shadow: 0 0 3px #ff9100, 0 0 6px #ff3b00, 0 0 10px #ff0000; }
+  }
+  .fire {
+    display: inline-block;
+    margin-left: 2ch;     /* spacing after F U S I O N */
+    width: 10ch;          /* fixed width so the right wall stays aligned */
+    color: #ffb300;
+    animation: flickerGlow 0.8s ease-in-out infinite;
+    white-space: pre;
+    font-weight: 700;
+  }
+
   /* Blinking Cursor */
   @keyframes blink {
     0%, 50%, 100% { opacity: 1; }
@@ -73,7 +87,7 @@
   }
   .cursor { animation: blink 1s infinite; }
 
-  /* Glitch Effect */
+  /* Glitch / radiating effect for FUSION */
   @keyframes glitch {
     0%   { text-shadow: 2px 0 #ff00ff; }
     25%  { text-shadow: -2px 0 #00ffff; }
@@ -102,17 +116,13 @@
       |                                                       |
       |        <span class="cat">/\_/\</span>                 |
       |       <span class="cat">( o.o )</span>                |
-      |        <span class="cat">&gt; ^ &lt;</span>           |
+      |        <span class="cat">&gt; ^ &lt;</span>                |
       |        CodingKitten Activated                         |
       |                                                       |
-      |     <span id="fusion" class="glitch">                 |
-      |     F U S I O N</span>                                |     
-      |     <span id="fusion" class="glitch"></span>          | 
+      |     <span id="fusion" class="glitch">F U S I O N</span><span id="fire" class="fire"></span>        |
       |                                                       |
-      |     ASCII + CODINGKITTEN = BIG MEOW ENERGY            |
-      |   > <span class="glitch">                             |
-      |    building the future right meow... </span>          |
-      |    <span class="cursor">█</span>                      |
+      |     ASCII + CODINGKITTEN = BIG MEOW ENERGY!!            |
+      |   > <span id="tagline"></span><span class="cursor">█</span>               |
       |_______________________________________________________|
 </pre>
 
@@ -121,22 +131,41 @@
 </footer>
 
 <script>
-  // Animate FUSION letter by letter without replacing the whole <pre> HTML
-  const fusionEl = document.getElementById('fusion');
-  const fusionText = 'FUSION';
-  let i = 0;
+  // --- ASCII Fire Animation (10 chars wide to preserve box) ---
+  const fireEl = document.getElementById('fire');
+  const fireFrames = [
+    "  ^  `  ^ ",  // 10 chars each
+    " ^  ^^  ~ ",
+    "  ` ^^  ^ ",
+    " ^  ` ^ ~ ",
+    "  ^^  ` ^ ",
+    " ~  ^  ^^ "
+  ].map(f => f.slice(0, 10)); // enforce width
 
-  function animateFusion() {
-    if (i <= fusionText.length) {
-      const spaced = fusionText.slice(0, i).split('').join(' ');
-      fusionEl.textContent = spaced;
-      i++;
-      setTimeout(animateFusion, 400);
+  let ff = 0;
+  function loopFire() {
+    fireEl.textContent = fireFrames[ff];
+    ff = (ff + 1) % fireFrames.length;
+    const delay = 90 + Math.random() * 80; // 90–170 ms flicker
+    setTimeout(loopFire, delay);
+  }
+  loopFire();
+
+  // --- Typewriter for tagline on one line ---
+  const taglineEl = document.getElementById('tagline');
+  const taglineText = 'building the future right meow...';
+  let t = 0;
+  function typeTagline() {
+    if (t <= taglineText.length) {
+      taglineEl.textContent = taglineText.slice(0, t);
+      t++;
+      const delay = taglineText[t - 1] === ' ' ? 120 : 55 + Math.random() * 60;
+      setTimeout(typeTagline, delay);
     }
   }
-
-  animateFusion();
+  setTimeout(typeTagline, 400);
 </script>
 
 </body>
 </html>
+``
