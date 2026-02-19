@@ -31,61 +31,48 @@
     text-shadow: 0 0 10px #00ffee;
   }
 
-  pre {
-    display: inline-block;
-    margin-top: 40px;
-    padding: 30px;
-    background: rgba(0, 0, 0, 0.85);
-    border: 2px solid #00ffee;
-    box-shadow: 0 0 25px #00ffee;
-    font-size: 14px;
-    line-height: 1.2;
-    text-align: left;
-    white-space: pre;               /* keep the ASCII box tight */
-    font-variant-ligatures: none;
-  }
-  /* scale down on small screens instead of wrapping */
-  @media (max-width: 480px) {
-    pre { font-size: 12px; }
-  }
+ pre {
+  display: inline-block;
+  margin-top: 40px;
+  padding: 30px;
+  background: rgba(0, 0, 0, 0.85);
+  border: 2px solid #00ffee;
+  box-shadow: 0 0 25px #00ffee;
+  font-size: 14px;
+  line-height: 1.2;
+  text-align: left;
+  white-space: pre;               /* IMPORTANT: no wrapping */
+  font-variant-ligatures: none;   /* avoid ligatures */
+  letter-spacing: 0;              /* keep monospace spacing clean */
+}
 
-  /* Floating Cat */
-  @keyframes catFloat {
-    0%   { transform: translateY(0px); }
-    50%  { transform: translateY(-2px); }
-    100% { transform: translateY(0px); }
-  }
-  .cat {
-    display: inline-block;
-    width: 7ch;
-    vertical-align: baseline;
-    line-height: 1;
-    animation: catFloat 2s ease-in-out infinite;
-    will-change: transform;
-  }
+@media (max-width: 480px) {
+  pre { font-size: 12px; }        /* scale down instead of wrapping */
+}
 
-  /* ASCII Fire (inline flicker) */
-  @keyframes flickerGlow {
-    0%   { text-shadow: 0 0 3px #ff9100, 0 0 6px #ff3b00, 0 0 10px #ff0000; }
-    50%  { text-shadow: 0 0 5px #ffc400, 0 0 10px #ff6a00, 0 0 15px #ff1a00; }
-    100% { text-shadow: 0 0 3px #ff9100, 0 0 6px #ff3b00, 0 0 10px #ff0000; }
-  }
-  .fire {
-    display: inline-block;
-    margin-left: 2ch;     /* spacing after F U S I O N */
-    width: 10ch;          /* fixed width so the right wall stays aligned */
-    color: #ffb300;
-    animation: flickerGlow 0.8s ease-in-out infinite;
-    white-space: pre;
-    font-weight: 700;
-  }
+/* Cats: fixed visual width to avoid shifting the right wall */
+.cat {
+  display: inline-block;
+  width: 7ch;                     /* matches the 7 chars in the cat spans */
+  vertical-align: baseline;
+  line-height: 1;
+  animation: catFloat 2s ease-in-out infinite;
+  will-change: transform;
+}
 
-  /* Blinking Cursor */
-  @keyframes blink {
-    0%, 50%, 100% { opacity: 1; }
-    25%, 75%      { opacity: 0; }
-  }
-  .cursor { animation: blink 1s infinite; }
+/* Fire: fixed width + glow flicker */
+.fire {
+  display: inline-block;
+  margin-left: 2ch;
+  width: 10ch;                    /* keep frames the same width */
+  color: #ffb300;
+  animation: flickerGlow 0.8s ease-in-out infinite;
+  white-space: pre;
+  font-weight: 700;
+}
+
+/* Cursor blink stays as-is */
+.cursor { animation: blink 1s infinite; }
 
   /* Glitch / radiating effect for FUSION */
   @keyframes glitch {
@@ -131,39 +118,53 @@
 </footer>
 
 <script>
-  // --- ASCII Fire Animation (10 chars wide to preserve box) ---
+  // --- FIRE: keep frames exactly 10 chars ---
   const fireEl = document.getElementById('fire');
   const fireFrames = [
-    "  ^  `  ^ ",  // 10 chars each
+    "  ^  `  ^ ",  // 10 chars
     " ^  ^^  ~ ",
     "  ` ^^  ^ ",
     " ^  ` ^ ~ ",
     "  ^^  ` ^ ",
     " ~  ^  ^^ "
-  ].map(f => f.slice(0, 10)); // enforce width
+  ].map(f => f.length === 10 ? f : f.slice(0,10).padEnd(10, ' '));
 
   let ff = 0;
-  function loopFire() {
-    fireEl.textContent = fireFrames[ff];
-    ff = (ff + 1) % fireFrames.length;
-    const delay = 90 + Math.random() * 80; // 90–170 ms flicker
-    setTimeout(loopFire, delay);
-  }
-  loopFire();
+  (function loopFire() {
+    if (fireEl) {
+      fireEl.textContent = fireFrames[ff];
+      ff = (ff + 1) % fireFrames.length;
+    }
+    setTimeout(loopFire, 90 + Math.random() * 80);
+  })();
 
-  // --- Typewriter for tagline on one line ---
+  // --- Tagline typewriter (single line)
   const taglineEl = document.getElementById('tagline');
   const taglineText = 'building the future right meow...';
   let t = 0;
-  function typeTagline() {
-    if (t <= taglineText.length) {
-      taglineEl.textContent = taglineText.slice(0, t);
+  (function typeTagline() {
+    if (!taglineEl) return;
+    taglineEl.textContent = taglineText.slice(0, t);
+    if (t < taglineText.length) {
       t++;
       const delay = taglineText[t - 1] === ' ' ? 120 : 55 + Math.random() * 60;
       setTimeout(typeTagline, delay);
     }
-  }
-  setTimeout(typeTagline, 400);
+  })();
+
+  // --- OPTIONAL: console checker for line lengths (helps debug walls)
+  (function checkLines() {
+    const pre = document.getElementById('terminal');
+    if (!pre) return;
+    const raw = pre.textContent.split('\n');
+    let max = 0;
+    raw.forEach(s => { max = Math.max(max, s.length); });
+    console.log('%c[ASCII CHECK] Lines:', 'color:#0ff');
+    raw.forEach((s, i) => {
+      const pad = ' '.repeat(Math.max(0, max - s.length));
+      console.log((i+1).toString().padStart(3,'0') + ' | ' + s + pad + ' | len=' + s.length);
+    });
+  })();
 </script>
 
 </body>
