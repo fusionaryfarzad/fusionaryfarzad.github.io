@@ -1,0 +1,144 @@
+Can you check this for me and give me any corrections before I commit to changes on Git Hub?
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<title>Fusionary ASCII Terminal</title>
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: "Courier New", monospace;
+    color: #00ffea;
+    text-align: center;
+    overflow-x: hidden;
+    background: linear-gradient(270deg, #0f0c29, #302b63, #24243e);
+    background-size: 600% 600%;
+    animation: cyberpunkBG 15s ease infinite;
+  }
+
+  @keyframes cyberpunkBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  h1 {
+    margin-top: 40px;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px #00ffee;
+  }
+
+  pre {
+    display: inline-block;
+    margin-top: 40px;
+    padding: 30px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 2px solid #00ffee;
+    box-shadow: 0 0 25px #00ffee;
+    font-size: 14px;
+    line-height: 1.2;
+    text-align: left;
+    white-space: pre-wrap;              /* ensure spaces are preserved and good for mobile*/
+    font-variant-ligatures: none;  /* avoid ligature surprises */
+  }
+
+  /* Floating Cat (kept subtle to avoid visual box distortion) */
+  @keyframes catFloat {
+    0%   { transform: translateY(0px); }
+    50%  { transform: translateY(-2px); }
+    100% { transform: translateY(0px); }
+  }
+
+  .cat {
+    display: inline-block;
+    width: 7ch;          /* fixed character width keeps columns aligned */
+    vertical-align: baseline;
+    line-height: 1;
+    animation: catFloat 2s ease-in-out infinite;
+    will-change: transform;
+  }
+
+.fire {
+  color: #ff5500;
+  text-shadow: 0 0 6px #ff2200, 0 0 12px #ff6600;
+}
+  
+  /* Blinking Cursor */
+  @keyframes blink {
+    0%, 50%, 100% { opacity: 1; }
+    25%, 75%      { opacity: 0; }
+  }
+  .cursor { animation: blink 1s infinite; }
+
+  /* Glitch Effect */
+  @keyframes glitch {
+    0%   { text-shadow: 2px 0 #ff00ff; }
+    25%  { text-shadow: -2px 0 #00ffff; }
+    50%  { text-shadow: 2px 2px #ff00ff; }
+    75%  { text-shadow: -2px -2px #00ffff; }
+    100% { text-shadow: 0 0 8px #00ffee; }
+  }
+  .glitch { animation: glitch 1.2s infinite; }
+
+  footer {
+    margin-top: 50px;
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>FUSIONARY TERMINAL v3.0</h1>
+
+<pre>
+        ________________________________________________
+       /                                                \
+      |  > farzad@cybercat:~$ initializing...           |
+      |                                                 |
+      |        <span class="cat">/\_/\</span>           |
+      |       <span class="cat">( o.o )</span>          |
+      |        <span class="cat">&gt; ^ &lt;</span>     |
+      |        CodingKitten Activated                   |
+      |                                                 |
+      |     <span id="fusion" class="glitch">           |
+      |     F U S I O N</span>                          |     
+      |     <span id="fusion" class="glitch"></span>    | 
+      |                                                 |
+      |     ASCII + CODINGKITTEN = BIG MEOW ENERGY      |
+      |   > <span class="glitch">                       |
+      |    building the future right meow... </span>    |
+      |    <span class="cursor">█</span>                |
+      |_________________________________________________|
+</pre>
+
+<footer>
+  Built by Fusionary Farzad — 2026
+</footer>
+
+<script>
+  // Animate FUSION letter by letter without replacing the whole <pre> HTML
+  const fusionEl = document.getElementById('fusion');
+  const fusionText = 'FUSION';
+  let i = 0;
+
+  function animateFusion() {
+    if (i <= fusionText.length) {
+      const spaced = fusionText.slice(0, i).split('').join(' ');
+      fusionEl.textContent = spaced;
+      i++;
+      setTimeout(animateFusion, 400);
+    }
+  }
+
+  animateFusion();
+</script>
+
+</body>
+</html>
