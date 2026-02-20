@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Fusionary ASCII Terminal</title>
 
 <style>
+  /* ===== Page ===== */
   body {
     margin: 0;
     padding: 0;
@@ -17,7 +18,6 @@
     background-size: 600% 600%;
     animation: cyberpunkBG 15s ease infinite;
   }
-
   @keyframes cyberpunkBG {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -31,6 +31,7 @@
     text-shadow: 0 0 10px #00ffee;
   }
 
+  /* ===== Terminal Frame ===== */
   pre {
     display: inline-block;
     margin-top: 40px;
@@ -41,32 +42,30 @@
     font-size: 14px;
     line-height: 1.2;
     text-align: left;
-    white-space: pre;               /* keep ASCII rigid */
-    font-variant-ligatures: none;
-    letter-spacing: 0;
+    white-space: pre;              /* critical: never wrap */
+    font-variant-ligatures: none;  /* avoid ligature surprises */
+    letter-spacing: 0;             /* keep monospace spacing clean */
   }
-
-  /* Scale down for narrow screens instead of wrapping */
   @media (max-width: 480px) {
-    pre { font-size: 12px; }
+    pre { font-size: 12px; }       /* scale down instead of wrapping */
   }
 
-  /* Floating Cat (this was missing) */
+  /* ===== Kitten float (vibration) ===== */
   @keyframes catFloat {
-    0%   { transform: translateY(0px); }
+    0%   { transform: translateY(0); }
     50%  { transform: translateY(-2px); }
-    100% { transform: translateY(0px); }
+    100% { transform: translateY(0); }
   }
   .cat {
     display: inline-block;
-    width: 7ch;                     /* fixed visual width */
+    width: 7ch;                    /* fixed width keeps columns aligned */
     vertical-align: baseline;
     line-height: 1;
     animation: catFloat 2s ease-in-out infinite;
     will-change: transform;
   }
 
-  /* Fire glow (this was missing) */
+  /* ===== Fire glow/flicker ===== */
   @keyframes flickerGlow {
     0%   { text-shadow: 0 0 3px #ff9100, 0 0 6px #ff3b00, 0 0 10px #ff0000; }
     50%  { text-shadow: 0 0 5px #ffc400, 0 0 10px #ff6a00, 0 0 15px #ff1a00; }
@@ -74,5 +73,122 @@
   }
   .fire {
     display: inline-block;
-    margin-left: 2ch;               /* gap after F U S I O N */
-    width: 10ch;                    /* frames are exactly 10 chars */
+    margin-left: 2ch;              /* gap after F U S I O N */
+    width: 10ch;                   /* frames are exactly 10 chars */
+    color: #ffb300;
+    animation: flickerGlow 0.8s ease-in-out infinite;
+    white-space: pre;
+    font-weight: 700;
+  }
+
+  /* ===== Cursor blink ===== */
+  @keyframes blink {
+    0%, 50%, 100% { opacity: 1; }
+    25%, 75%      { opacity: 0; }
+  }
+  .cursor { animation: blink 1s infinite; }
+
+  /* ===== Glitch/radiating for FUSION ===== */
+  @keyframes glitch {
+    0%   { text-shadow: 2px 0 #ff00ff; }
+    25%  { text-shadow: -2px 0 #00ffff; }
+    50%  { text-shadow: 2px 2px #ff00ff; }
+    75%  { text-shadow: -2px -2px #00ffff; }
+    100% { text-shadow: 0 0 8px #00ffee; }
+  }
+  .glitch { animation: glitch 1.2s infinite; }
+
+  footer {
+    margin-top: 50px;
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>FUSIONARY TERMINAL v3.0</h1>
+
+<!--
+  IMPORTANT:
+  - Every line in this <pre> is padded so the right wall '|' lines up perfectly.
+  - If you nudge content horizontally, adjust spaces BEFORE the final '|' only on that line.
+-->
+<pre id="terminal">
+       _____________________________________________________________
+      /                                                             \
+      |  > farzad@cybercat:~$ initializing...                       |
+      |                                                             |
+      |        <span class="cat">/\_/\  </span>                     |
+      |       <span class="cat">( o.o ) </span>                     |
+      |        <span class="cat"> > ^ <  </span>                     |
+      |        CodingKitten Activated                               |
+      |                                                             |
+      |            <span id="fusion" class="glitch">F U S I O N</span><span id="fire" class="fire"></span> |
+      |                                                             |
+      |     ASCII + CODINGKITTEN = BIG MEOW ENERGY!                 |
+      |   > <span id="tagline"></span><span class="cursor">█</span>                 |
+      |_____________________________________________________________|
+</pre>
+
+<footer>
+  Built by Fusionary Farzad — 2026 · Deployed marker: <span id="buildStamp"></span>
+</footer>
+
+<script>
+  // Build marker so you can tell if the page is fresh (acts like a simple cache-buster cue)
+  document.getElementById('buildStamp').textContent = new Date().toISOString();
+
+  // --- ASCII Fire: frames are exactly 10 chars (matches .fire width) ---
+  const fireEl = document.getElementById('fire');
+  const fireFrames = [
+    "  ^  `  ^ ",  // 10 chars
+    " ^  ^^  ~ ",
+    "  ` ^^  ^ ",
+    " ^  ` ^ ~ ",
+    "  ^^  ` ^ ",
+    " ~  ^  ^^ "
+  ].map(f => f.length === 10 ? f : f.slice(0,10).padEnd(10, ' '));
+
+  let ff = 0;
+  (function loopFire() {
+    if (fireEl) {
+      fireEl.textContent = fireFrames[ff];
+      ff = (ff + 1) % fireFrames.length;
+    }
+    setTimeout(loopFire, 90 + Math.random() * 80); // organic flicker
+  })();
+
+  // --- Tagline typewriter (single line, with cursor span after it) ---
+  const taglineEl = document.getElementById('tagline');
+  const taglineText = 'building the future right meow...';
+  let t = 0;
+  (function typeTagline() {
+    if (!taglineEl) return;
+    taglineEl.textContent = taglineText.slice(0, t);
+    if (t < taglineText.length) {
+      t++;
+      const delay = taglineText[t - 1] === ' ' ? 120 : 55 + Math.random() * 60;
+      setTimeout(typeTagline, delay);
+    }
+  })();
+
+  // --- Optional: console checker to verify line lengths (debug tool) ---
+  (function checkLines() {
+    const pre = document.getElementById('terminal');
+    if (!pre) return;
+    const raw = pre.textContent.split('\n');
+    let max = 0;
+    raw.forEach(s => { max = Math.max(max, s.length); });
+    console.log('%c[ASCII CHECK] Lines:', 'color:#0ff');
+    raw.forEach((s, i) => {
+      const pad = ' '.repeat(Math.max(0, max - s.length));
+      console.log((i+1).toString().padStart(3,'0') + ' | ' + s + pad + ' | len=' + s.length);
+    });
+  })();
+</script>
+
+</body>
+</html>
+``
