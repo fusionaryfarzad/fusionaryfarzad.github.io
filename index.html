@@ -69,6 +69,7 @@
    pre {
   max-width: 100%;
   overflow-x: auto;
+    }
 }
 
   /* ===== Kitten float (vibration) ===== */
@@ -127,7 +128,13 @@
     100% { text-shadow: 0 0 8px #00ffee; }
   }
   .glitch { animation: glitch 1.2s infinite; }
-
+  
+  .tagline {
+  display: inline-block;
+  width: 58ch;        /* exact space reserved */
+  white-space: pre;   /* preserve spacing */
+}
+    
   footer {
     margin-top: 50px;
     font-size: 0.9rem;
@@ -160,34 +167,27 @@
       /                                                             \
       |  > farzad@cybercat:~$ initializing...                       |
       |                                                             |
-      |   <span class="cat"> /\_/\  </span>                                                  |
-      |   <span class="cat">( o.o ) </span>                                                  |
-      |   <span class="cat"> > ^ <  </span>                                                  |
+      |   <span class="cat"> /\_/\  </span>                                                   |
+      |   <span class="cat">( o.o ) </span>                                                   |
+      |   <span class="cat"> > ^ <  </span>                                                   |
       |   CodingKitten Activated                                    |
       |                                                             |
       |   <span id="fusion" class="glitch">F U S I O N</span>                                               |
-      |   <span id="fire" class="fire"></span>                                                |
+      |   <span id="fire" class="fire"></span>                                              |
       |                                                             |
       |   ASCII + CODINGKITTEN = BIG MEOW ENERGY!                   |
-      |   <span id="tagline" class="tagline"></span><span class="cursor"></span>                        |
+      |   <span id="tagline" class="tagline"></span><span class="cursor">█</span>                        |
       |_____________________________________________________________|
 </pre>
 
 <footer>
   Built by Fusionary Farzad — 2026 · Deployed marker: <span id="buildStamp"></span>
 </footer>
-
-.tagline {
-  display: inline-block;
-  width: 58ch;        /* exact space reserved */
-  white-space: pre;   /* preserve spacing */
-}
-
 <script>
   // Build marker so you can tell if the page is fresh (acts like a simple cache-buster cue)
   // Adds a timestamp to the footer.
 // Useful to confirm the browser is not showing a cached version.
-document.getElementById('buildStamp').textContent = new Date().toISOString();
+
   document.getElementById('buildStamp').textContent = new Date().toISOString();
 
   // --- ASCII Fire: frames are exactly 10 chars (matches .fire width) ---
@@ -255,7 +255,7 @@ document.getElementById('buildStamp').textContent = new Date().toISOString();
 
 </body>
 </html>
-``
+
 
   
   
