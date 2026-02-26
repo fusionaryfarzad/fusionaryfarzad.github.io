@@ -52,22 +52,24 @@
 
   /* ===== Terminal Frame ===== */
   pre {
-    display: inline-block;
-    margin-top: 40px;
-    padding: 30px;
-    background: rgba(0, 0, 0, 0.85);
-    border: 2px solid #00ffee;
-    box-shadow: 0 0 25px #00ffee;
-    font-size: 14px;
-    line-height: 1.2;
-    text-align: left;
-    white-space: pre;              /* critical: never wrap */
-    font-variant-ligatures: none;  /* avoid ligature surprises */
-    letter-spacing: 0;             /* keep monospace spacing clean */
+
+  display: inline-block;
+  padding: 30px;
+  background: rgba(0,0,0,0.85);
+  border: 2px solid #00ffee;
+  box-shadow: 0 0 25px #00ffee;
+  font-family: monospace;
+  font-size: 14px;
+  line-height: 1.2;
+  white-space: pre !important;
+  overflow-x: auto;
+  text-align: left;
   }
   @media (max-width: 480px) {
-    pre { font-size: 12px; }       /* scale down instead of wrapping */
-  }
+   pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
 
   /* ===== Kitten float (vibration) ===== */
   @keyframes catFloat {
@@ -158,22 +160,28 @@
       /                                                             \
       |  > farzad@cybercat:~$ initializing...                       |
       |                                                             |
-      |   <span class="cat"> /\_/\  </span>                                                   |
-      |   <span class="cat">( o.o ) </span>                                                   |
-      |   <span class="cat"> > ^ <  </span>                                                   |
+      |   <span class="cat"> /\_/\  </span>                                                  |
+      |   <span class="cat">( o.o ) </span>                                                  |
+      |   <span class="cat"> > ^ <  </span>                                                  |
       |   CodingKitten Activated                                    |
       |                                                             |
       |   <span id="fusion" class="glitch">F U S I O N</span>                                               |
-      |   <span id="fire" class="fire"></span>                                              |
+      |   <span id="fire" class="fire"></span>                                                |
       |                                                             |
-      |     ASCII + CODINGKITTEN = BIG MEOW ENERGY!                 |
-      |   <span id="tagline"></span><span class="cursor">█</span>                        |
+      |   ASCII + CODINGKITTEN = BIG MEOW ENERGY!                   |
+      |   <span id="tagline" class="tagline"></span><span class="cursor">█</span>                       |
       |_____________________________________________________________|
 </pre>
 
 <footer>
   Built by Fusionary Farzad — 2026 · Deployed marker: <span id="buildStamp"></span>
 </footer>
+
+.tagline {
+  display: inline-block;
+  width: 58ch;        /* exact space reserved */
+  white-space: pre;   /* preserve spacing */
+}
 
 <script>
   // Build marker so you can tell if the page is fresh (acts like a simple cache-buster cue)
@@ -214,11 +222,12 @@ document.getElementById('buildStamp').textContent = new Date().toISOString();
   let t = 0;
   (function typeTagline() {
     if (!taglineEl) return;
-    taglineEl.textContent = taglineText.slice(0, t);
+    const visible = taglineText.slice(0, t);
+    taglineEl.textContent = visible.padEnd(34, ' ');
     if (t < taglineText.length) {
       t++;
       const delay = taglineText[t - 1] === ' ' ? 120 : 55 + Math.random() * 60;
-      setTimeout(typeTagline, delay);
+          setTimeout(typeTagline, delay);
     }
   })();
 
@@ -247,3 +256,6 @@ document.getElementById('buildStamp').textContent = new Date().toISOString();
 </body>
 </html>
 ``
+
+  
+  
