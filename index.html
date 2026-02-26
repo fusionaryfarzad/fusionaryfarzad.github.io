@@ -104,8 +104,7 @@
     width: 10ch;                   /* frames are exactly 10 chars */
     color: #ffb300;
     animation: flickerGlow 0.8s ease-in-out infinite;
-    white-space: pre !important;
-    overflow-x: auto;
+    white-space: pre !important;  
     font-weight: 700;
   }
 
@@ -131,7 +130,7 @@
   
   .tagline {
   display: inline-block;
-  width: 58ch;        /* exact space reserved */
+  width: 38ch;        /* exact space reserved */
   white-space: pre;   /* preserve spacing */
 }
     
@@ -170,13 +169,13 @@
       |   <span class="cat"> /\_/\  </span>                                                   |
       |   <span class="cat">( o.o ) </span>                                                   |
       |   <span class="cat"> > ^ <  </span>                                                   |
-      |   CodingKitten Activated                                    |
+      |                    CodingKitten Activated                   |
       |                                                             |
-      |   <span id="fusion" class="glitch">F U S I O N</span>                                               |
-      |   <span id="fire" class="fire"></span>                                              |
+      |   <span id="fusion" class="glitch">       F U S I O N L I T !</span>                                |
+      |           <span id="fire" class="fire"></span>                                      |
       |                                                             |
-      |   ASCII + CODINGKITTEN = BIG MEOW ENERGY!                   |
-      |   <span id="tagline" class="tagline"></span><span class="cursor">█</span>                        |
+      |  ASCII + CODINGKITTEN = BIG MEOW ENERGY!                    |
+      |  <span id="tagline" class="tagline"></span><span class="cursor">█</span>                    |
       |_____________________________________________________________|
 </pre>
 
@@ -193,15 +192,14 @@
   // --- ASCII Fire: frames are exactly 10 chars (matches .fire width) ---
   const fireEl = document.getElementById('fire');
   const fireFrames = [
-    "  ^  `  ^ ",  // 10 chars
+    "  ^  `  ^ ",  
     " ^  ^^  ~ ",
     "  ` ^^  ^ ",
     " ^  ` ^ ~ ",
     "  ^^  ` ^ ",
     " ~  ^  ^^ "
-  ].map(f => f.length === 10 ? f : f.slice(0,10).padEnd(10, ' '));
+  ].map(f => f.length === 10 ? f : f.slice(0,10).padEnd(10, ' ')); // Ensures every frame is EXACTLY 10 characters.
 // Safety check:
-// Ensures every frame is EXACTLY 10 characters.
 // If not, it trims or pads with spaces.
 // This prevents the ASCII border from breaking.
   let ff = 0;
@@ -213,7 +211,7 @@
     setTimeout(loopFire, 90 + Math.random() * 80); // organic flicker
   })();
 
-  // --- Tagline typewriter (single line, with cursor span after it) ---// Safety check:
+  // --- Tagline typewriter (single line, with cursor span after it) ---
 // Ensures every frame is EXACTLY 10 characters.
 // If not, it trims or pads with spaces.
 // This prevents the ASCII border from breaking.
@@ -223,7 +221,7 @@
   (function typeTagline() {
     if (!taglineEl) return;
     const visible = taglineText.slice(0, t);
-    taglineEl.textContent = visible.padEnd(34, ' ');
+    taglineEl.textContent = visible;
     if (t < taglineText.length) {
       t++;
       const delay = taglineText[t - 1] === ' ' ? 120 : 55 + Math.random() * 60;
