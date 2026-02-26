@@ -2,11 +2,23 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- 
+  viewport tag makes the layout responsive on phones.
+  width=device-width makes it match the device screen.
+  initial-scale=1.0 prevents weird zoom behavior.
+-->
 <title>Fusionary ASCII Terminal</title>
 
 <style>
-  /* ===== Page ===== */
+  /* ===== Page ===== */ /* 
+  ===== Page Styling =====
+
+  This styles the entire page background and base typography.
+  - Removes default margin/padding.
+  - Uses a monospace font for terminal feel.
+  - Applies animated gradient background.
+  - Prevents horizontal scrolling.
+*/
   body {
     margin: 0;
     padding: 0;
@@ -16,8 +28,15 @@
     overflow-x: hidden;
     background: linear-gradient(270deg, #0f0c29, #302b63, #24243e);
     background-size: 600% 600%;
-    animation: cyberpunkBG 15s ease infinite;
+    animation: cyberpunkBG 15s ease infinite; 
   }
+  /* 
+  background-size: 600% 600%
+  Makes the gradient much larger than screen so it can animate smoothly.
+  
+  animation: cyberpunkBG ...
+  Loops the gradient movement infinitely.
+*/
   @keyframes cyberpunkBG {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -66,6 +85,11 @@
   }
 
   /* ===== Fire glow/flicker ===== */
+  /* 
+  The fire span has a fixed width of 10 characters (10ch).
+  This MUST match the JavaScript fire frame length.
+  Otherwise the right border "|" will shift and break alignment.
+*/
   @keyframes flickerGlow {
     0%   { text-shadow: 0 0 3px #ff9100, 0 0 6px #ff3b00, 0 0 10px #ff0000; }
     50%  { text-shadow: 0 0 5px #ffc400, 0 0 10px #ff6a00, 0 0 15px #ff1a00; }
@@ -87,6 +111,9 @@
     25%, 75%      { opacity: 0; }
   }
   .cursor { animation: blink 1s infinite; }
+  /* 
+  Simple opacity animation to mimic a terminal cursor.
+*/
 
   /* ===== Glitch/radiating for FUSION ===== */
   @keyframes glitch {
@@ -115,6 +142,16 @@
   - Every line in this <pre> is padded so the right wall '|' lines up perfectly.
   - If you nudge content horizontally, adjust spaces BEFORE the final '|' only on that line.
 -->
+  <!-- 
+  IMPORTANT ABOUT ASCII LAYOUT:
+
+  Every line must be EXACTLY the same length.
+  The right wall "|" must vertically align.
+
+  If something shifts:
+  - Adjust spaces BEFORE the final "|" on that line.
+  - Never add characters after the "|".
+-->
 <pre id="terminal">
        _____________________________________________________________
       /                                                             \
@@ -122,13 +159,14 @@
       |                                                             |
       |        <span class="cat">/\_/\  </span>                     |
       |       <span class="cat">( o.o ) </span>                     |
-      |        <span class="cat"> > ^ <  </span>                     |
+      |        <span class="cat"> > ^ <  </span>                    |
       |        CodingKitten Activated                               |
       |                                                             |
-      |            <span id="fusion" class="glitch">F U S I O N</span><span id="fire" class="fire"></span> |
+      |       <span id="fusion" class="glitch">F U S I O N</span>   |
+      |       <span id="fire" class="fire"></span>                  |
       |                                                             |
       |     ASCII + CODINGKITTEN = BIG MEOW ENERGY!                 |
-      |   > <span id="tagline"></span><span class="cursor">█</span>                 |
+      |   > <span id="tagline"></span><span class="cursor">█</span> |
       |_____________________________________________________________|
 </pre>
 
@@ -138,6 +176,9 @@
 
 <script>
   // Build marker so you can tell if the page is fresh (acts like a simple cache-buster cue)
+  // Adds a timestamp to the footer.
+// Useful to confirm the browser is not showing a cached version.
+document.getElementById('buildStamp').textContent = new Date().toISOString();
   document.getElementById('buildStamp').textContent = new Date().toISOString();
 
   // --- ASCII Fire: frames are exactly 10 chars (matches .fire width) ---
@@ -150,7 +191,10 @@
     "  ^^  ` ^ ",
     " ~  ^  ^^ "
   ].map(f => f.length === 10 ? f : f.slice(0,10).padEnd(10, ' '));
-
+// Safety check:
+// Ensures every frame is EXACTLY 10 characters.
+// If not, it trims or pads with spaces.
+// This prevents the ASCII border from breaking.
   let ff = 0;
   (function loopFire() {
     if (fireEl) {
@@ -160,7 +204,10 @@
     setTimeout(loopFire, 90 + Math.random() * 80); // organic flicker
   })();
 
-  // --- Tagline typewriter (single line, with cursor span after it) ---
+  // --- Tagline typewriter (single line, with cursor span after it) ---// Safety check:
+// Ensures every frame is EXACTLY 10 characters.
+// If not, it trims or pads with spaces.
+// This prevents the ASCII border from breaking.
   const taglineEl = document.getElementById('tagline');
   const taglineText = 'building the future right meow...';
   let t = 0;
@@ -175,6 +222,13 @@
   })();
 
   // --- Optional: console checker to verify line lengths (debug tool) ---
+  /*
+  Debug Tool:
+
+  Logs each line length in the console.
+  If the right border looks broken,
+  this tells you which line has extra or missing characters.
+*/
   (function checkLines() {
     const pre = document.getElementById('terminal');
     if (!pre) return;
